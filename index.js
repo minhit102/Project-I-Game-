@@ -23,13 +23,72 @@ const keys = {
     }
 }
 
-canvas.width = 1024
-canvas.height = 576
+canvas.width = 1368
+canvas.height = 666
 c.fillRect(0, 0, canvas.width, canvas.height)
 class Sprite {
-    constructor({ position, velocity, color, offset }) {
-
+    constructor({
+        position,
+        imageSrc,
+        scale,
+        framesMax,
+        offset = { x : 0 , y: 1},
+    }) {
         this.position = position
+        this.width = 50
+        this.height = 150
+        this.image = new Image()
+        this.image.src = imageSrc
+        this.scale = scale
+        this.framesMax = framesMax
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 5
+        this.offset = offset
+    }
+    draw() {
+        c.drawImage(
+            this.image,
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            this.position.x - this.offset.x,
+            this.position.y - this.offset.y,
+            (this.image.width / this.framesMax) * this.scale,
+            this.image.height * this.scale
+        );
+    }
+    update() {
+        this.draw();
+        this.framesElapsed++
+        if (this.framesElapsed % this.framesHold === 0) {
+            if (this.framesCurrent < this.framesMax - 1) {
+                this.framesCurrent++;
+            }
+            else this.framesCurrent = 0;
+        }
+    }
+}
+
+class Fighter extends Sprite {
+    constructor({
+        position,
+        velocity,
+        color,
+        imageSrc,
+        scale = 1,
+        framesMax = 1,
+        offset = { x : 0 , y: 1}
+    }) {
+        super({
+            position,
+            imageSrc,
+            scale,
+            framesMax,
+            offset
+        })
+
         this.velocity = velocity
         this.width = 50
         this.height = 150
@@ -46,26 +105,53 @@ class Sprite {
         }
         this.color = color
         this.isAttacking
+        this.health = 100
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 5
     }
+
+    /*draw() {
+         c.fillStyle = this.color
+         c.fillRect(this.position.x, this.position.y, this.width, this.height)
+ 
+         if (this.isAttacking) {
+             c.fillStyle = 'green'
+             c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+         }
+ 
+     }*/
+
     draw() {
-        c.fillStyle = this.color
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
-        if (this.isAttacking) {
-            c.fillStyle = 'green'
-            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
-        }
-
+        c.drawImage(
+            this.image,
+            this.framesCurrent * (this.image.width / this.framesMax),
+            0,
+            this.image.width / this.framesMax,
+            this.image.height,
+            this.position.x,
+            this.position.y,
+            (this.image.width / this.framesMax) * this.scale,
+            this.image.height * this.scale
+        );
     }
+
 
     update() {
         this.draw()
-
+        this.framesElapsed++
+        if (this.framesElapsed % this.framesHold === 0) {
+            if (this.framesCurrent < this.framesMax - 1) {
+                this.framesCurrent++;
+            }
+            else this.framesCurrent = 0;
+        }
+        
         this.attackBox.position.x = this.position.x + this.attackBox.offset.x
         this.attackBox.position.y = this.position.y
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
-        if (this.position.y + this.height + this.velocity.y >= canvas.height) {
+        if (this.position.y + this.height + this.velocity.y >= canvas.height - 148) {
             this.velocity.y = 0
         }
         else this.velocity.y += gravity
@@ -78,7 +164,57 @@ class Sprite {
     }
 }
 
-const player = new Sprite({
+const background = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSrc: './img/bg_livel_1.png',
+    scale: 1,
+    framesMax: 1
+});
+
+
+const shop = new Sprite({
+    position: {
+        x: 964,
+        y: 264
+    },
+    imageSrc: './img/shop_anim.png',
+    scale: 1.2,
+    framesMax: 6
+});
+
+const fence_left = new Sprite({
+    position: {
+        x: 795,
+        y: 525
+    },
+    imageSrc: './img/decorations/fence_1.png',
+    scale: 2.4,
+    framesMax: 1
+});
+const fence_1 = new Sprite({
+    position: {
+        x: 564,
+        y: 525
+    },
+    imageSrc: './img/decorations/fence_1.png',
+    scale: 2.4,
+    framesMax: 1
+});
+const fence_right = new Sprite({
+    position: {
+        x: 1208,
+        y: 525
+    },
+    imageSrc: './img/decorations/fence_2.png',
+    scale: 2.4,
+    framesMax: 1
+});
+
+
+const player = new Fighter({
     position: {
         x: 0,
         y: 0
@@ -91,10 +227,14 @@ const player = new Sprite({
     offset: {
         x: 0,
         y: 0
-    }
+    },
+    imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Idle.png',
+    scale: 2.5,
+    framesMax: 10,
+    offset : { x : 0 , y: 0}
 })
 
-const enemy = new Sprite({
+const enemy = new Fighter({
     position: {
         x: 400,
         y: 30
@@ -107,7 +247,11 @@ const enemy = new Sprite({
     offset: {
         x: -50,
         y: 0
-    }
+    },
+    imageSrc: './img/FreeKnight_v1/Colour2/NoOutline/120x80_PNGSheets/_Idle.png',
+    scale: 2.5,
+    framesMax: 10,
+    offset : { x : 0 , y: 1}
 })
 
 function rectangularCollision({ rectangler1, rectangler2 }) {
@@ -119,33 +263,33 @@ function rectangularCollision({ rectangler1, rectangler2 }) {
     )
 }
 
-function determineWinner({player , enemy , timerId}){  
-    clearTimeout(timerId) 
-    if(player.health === enemy.health){
+function determineWinner({ player, enemy, timerId }) {
+    clearTimeout(timerId)
+    if (player.health === enemy.health) {
         document.querySelector('#displayText').innerHTML = "Tie"
     }
-    else if (player.health > enemy.health){
+    else if (player.health > enemy.health) {
         document.querySelector('#displayText').innerHTML = "Player Win"
     }
     else {
         document.querySelector('#displayText').innerHTML = "Enemy Win"
     }
-    timer = 0 ;
+    timer = 0;
     document.querySelector('#displayText').style.display = 'flex'
 }
 
 let timer = 100
 let timerId
-function decreaseTimer(){  
-        if(timer > 0){
-            timerId = setTimeout(decreaseTimer, 1000)
-            timer --;
-            document.querySelector('#timer').innerHTML = timer;
-        }
-        if(timer === 0){
-            determineWinner({player , enemy, timer});
-        }
+function decreaseTimer() {
+    if (timer > 0) {
+        timerId = setTimeout(decreaseTimer, 1000)
+        timer--;
+        document.querySelector('#timer').innerHTML = timer;
     }
+    if (timer === 0) {
+        determineWinner({ player, enemy, timer });
+    }
+}
 decreaseTimer()
 //document.querySelector('#timer').style.width = player.health + '%'
 
@@ -154,6 +298,11 @@ function animate() {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
+    background.update()
+    shop.update()
+    fence_left.update()
+    fence_right.update()
+    fence_1.update()
     player.update()
     enemy.update()
 
@@ -197,8 +346,8 @@ function animate() {
         console.log('Enemy attacking ')
     }
 
-    if(player.health === 0 || enemy.health === 0) {
-        determineWinner({player , enemy, timer})
+    if (player.health === 0 || enemy.health === 0) {
+        determineWinner({ player, enemy, timer })
     }
 }
 
