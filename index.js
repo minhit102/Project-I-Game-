@@ -32,7 +32,7 @@ class Sprite {
         imageSrc,
         scale,
         framesMax,
-        offset = { x : 0 , y: 1},
+        offset = { x: 0, y: 1 },
     }) {
         this.position = position
         this.width = 50
@@ -79,7 +79,8 @@ class Fighter extends Sprite {
         imageSrc,
         scale = 1,
         framesMax = 1,
-        offset = { x : 0 , y: 1}
+        offset = { x: 0, y: 1 },
+        sprites
     }) {
         super({
             position,
@@ -109,6 +110,13 @@ class Fighter extends Sprite {
         this.framesCurrent = 0
         this.framesElapsed = 0
         this.framesHold = 5
+        this.sprites = sprites
+        for( const sprite in sprites){
+            sprites[sprite].image = new Image()
+            sprites[sprite].image.src = sprites[sprite].imageSrc
+        }
+
+        console.log(this.sprites);
     }
 
     /*draw() {
@@ -146,7 +154,7 @@ class Fighter extends Sprite {
             }
             else this.framesCurrent = 0;
         }
-        
+
         this.attackBox.position.x = this.position.x + this.attackBox.offset.x
         this.attackBox.position.y = this.position.y
         this.position.y += this.velocity.y
@@ -231,7 +239,19 @@ const player = new Fighter({
     imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Idle.png',
     scale: 2.5,
     framesMax: 10,
-    offset : { x : 0 , y: 0}
+    offset: { x: 0, y: 0 },
+    sprites: {
+        idle: {
+            imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Idle.png',
+            framesMax: 10
+        },
+        run: {
+            imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Run.png',
+            framesMax: 10,
+            image : new Image()
+        },
+        
+    }
 })
 
 const enemy = new Fighter({
@@ -251,7 +271,7 @@ const enemy = new Fighter({
     imageSrc: './img/FreeKnight_v1/Colour2/NoOutline/120x80_PNGSheets/_Idle.png',
     scale: 2.5,
     framesMax: 10,
-    offset : { x : 0 , y: 1}
+    offset: { x: 0, y: 1 }
 })
 
 function rectangularCollision({ rectangler1, rectangler2 }) {
@@ -309,11 +329,14 @@ function animate() {
     player.velocity.x = 0
     enemy.velocity.x = 0
     // hanh dong cua player
+    player.image = player.sprites.idle.image
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -5
+        player.image = player.sprites.run.image
     }
     else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
+        player.image = player.sprites.run.image
     }
 
 
