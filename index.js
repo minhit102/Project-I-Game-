@@ -247,8 +247,12 @@ const player = new Fighter({
         },
         run: {
             imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Run.png',
-            framesMax: 10,
-            image : new Image()
+            framesMax: 10
+        },
+        jump: {
+            imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Jump.png',
+            framesMax: 3,
+            
         },
         
     }
@@ -337,6 +341,10 @@ function animate() {
     else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
         player.image = player.sprites.run.image
+    }
+
+    if(player.velocity.y < 0){
+        player.image = player.sprites.jump.image
     }
 
 
