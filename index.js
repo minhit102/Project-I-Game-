@@ -111,7 +111,7 @@ class Fighter extends Sprite {
         this.framesElapsed = 0
         this.framesHold = 5
         this.sprites = sprites
-        for( const sprite in sprites){
+        for (const sprite in sprites) {
             sprites[sprite].image = new Image()
             sprites[sprite].image.src = sprites[sprite].imageSrc
         }
@@ -159,7 +159,7 @@ class Fighter extends Sprite {
         this.attackBox.position.y = this.position.y
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
-        if (this.position.y + this.height + this.velocity.y >= canvas.height - 148) {
+        if (this.position.y + this.height + this.velocity.y >= canvas.height - 200) {
             this.velocity.y = 0
         }
         else this.velocity.y += gravity
@@ -169,6 +169,38 @@ class Fighter extends Sprite {
         setTimeout(() => {
             this.isAttacking = false;
         }, 100)
+    }
+    switchSprite(sprite) {
+        switch (sprite) {
+            case 'idle':
+                if (this.image !== this.sprites.idle.image) {
+                    this.image = this.sprites.idle.image
+                    this.framesMax = this.sprites.idle.framesMax
+                    this.framesCurrent = 0;
+                }
+                break;
+            case 'run':
+                if (this.image !== this.sprites.run.image) {
+                    this.image = this.sprites.run.image
+                    this.framesMax = this.sprites.run.framesMax
+                    this.framesCurrent = 0;
+                }
+                break;
+            case 'jump':
+                if (this.image !== this.sprites.jump.image) {
+                    this.image = this.sprites.jump.image
+                    this.framesMax = this.sprites.jump.framesMax
+                    this.framesCurrent = 0;
+                }
+                break;
+            case 'fall':
+                if (this.image !== this.sprites.fall.image) {
+                    this.image = this.sprites.fall.image
+                    this.framesMax = this.sprites.fall.framesMax
+                    this.framesCurrent = 0;
+                }
+                break;
+        }
     }
 }
 
@@ -236,32 +268,35 @@ const player = new Fighter({
         x: 0,
         y: 0
     },
-    imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Idle.png',
-    scale: 2.5,
-    framesMax: 10,
-    offset: { x: 0, y: 0 },
+    imageSrc: './img/Player1/Martial Hero/Sprites/Idle.png',
+    scale: 2,
+    framesMax: 8,
+    offset: { x: 100, y: 100},
     sprites: {
         idle: {
-            imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Idle.png',
-            framesMax: 10
+            imageSrc: './img/Player1/Martial Hero/Sprites/Idle.png',
+            framesMax: 8
         },
         run: {
-            imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Run.png',
-            framesMax: 10
+            imageSrc: './img/Player1/Martial Hero/Sprites/Run.png',
+            framesMax: 8
         },
         jump: {
-            imageSrc: './img/FreeKnight_v1/Colour1/NoOutline/120x80_PNGSheets/_Jump.png',
-            framesMax: 3,
-            
+            imageSrc: './img/Player1/Martial Hero/Sprites/Jump.png',
+            framesMax: 2,
         },
-        
+        fall: {
+            imageSrc: './img/Player1/Martial Hero/Sprites/Fall.png',
+            framesMax: 2,
+        },
+
     }
 })
 
 const enemy = new Fighter({
     position: {
-        x: 400,
-        y: 30
+        x: 0,
+        y: 0
     },
     velocity: {
         x: 0,
@@ -269,7 +304,7 @@ const enemy = new Fighter({
     },
     color: 'yellow',
     offset: {
-        x: -50,
+        x: 0,
         y: 0
     },
     imageSrc: './img/FreeKnight_v1/Colour2/NoOutline/120x80_PNGSheets/_Idle.png',
@@ -333,18 +368,21 @@ function animate() {
     player.velocity.x = 0
     enemy.velocity.x = 0
     // hanh dong cua player
-    player.image = player.sprites.idle.image
+    player.switchSprite('idle')
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -5
-        player.image = player.sprites.run.image
+        player.switchSprite('run')
     }
     else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 5
-        player.image = player.sprites.run.image
+        player.switchSprite('run')
     }
 
-    if(player.velocity.y < 0){
-        player.image = player.sprites.jump.image
+    if (player.velocity.y < 0) {
+        player.switchSprite('jump')
+        //player.framesMax = player.sprites.jump.framesMax
+    }else if(player.velocity.y > 0){
+        player.switchSprite('fall')
     }
 
 
