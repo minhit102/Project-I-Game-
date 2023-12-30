@@ -16,16 +16,6 @@ const background = new Sprite({
   imageSrc: './img/bg_livel_2.png'
 })
 
-/*const shop = new Sprite({
-  position: {
-    x: 600,
-    y: 128
-  },
-  imageSrc: './img/shop.png',
-  scale: 2.75,
-  framesMax: 6
-})*/
-
 const player = new Fighter({
   position: {
     x: 0,
@@ -44,7 +34,7 @@ const player = new Fighter({
   scale: 2.5,
   offset: {
     x: 215,
-    y: 157
+    y: 138
   },
   sprites: {
     idle: {
@@ -105,12 +95,12 @@ const enemy = new Fighter({
   scale: 2.5,
   offset: {
     x: 215,
-    y: 167
+    y: 92
   },
   sprites: {
     idle: {
       imageSrc: './img/Player2/Idle.png',
-      framesMax: 4
+      framesMax: 10
     },
     run: {
       imageSrc: './img/Player2/Run.png',
@@ -118,15 +108,15 @@ const enemy = new Fighter({
     },
     jump: {
       imageSrc: './img/Player2/Jump.png',
-      framesMax: 2
+      framesMax: 3
     },
     fall: {
       imageSrc: './img/Player2/Fall.png',
-      framesMax: 2
+      framesMax: 3
     },
     attack1: {
       imageSrc: './img/Player2/Attack1.png',
-      framesMax: 4
+      framesMax: 7
     },
     takeHit: {
       imageSrc: './img/Player2/Take hit.png',
@@ -171,7 +161,6 @@ function animate() {
   c.fillStyle = 'black'
   c.fillRect(0, 0, canvas.width, canvas.height)
   background.update()
-  shop.update()
   c.fillStyle = 'rgba(255, 255, 255, 0.15)'
   c.fillRect(0, 0, canvas.width, canvas.height)
   player.update()
