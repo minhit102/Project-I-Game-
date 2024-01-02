@@ -13,7 +13,7 @@ const background = new Sprite({
     x: 0,
     y: 0
   },
-  imageSrc: './img/bg_livel_2.png'
+  imageSrc: './img/anh2.jpg'
 })
 
 const player = new Fighter({
@@ -95,7 +95,7 @@ const enemy = new Fighter({
   scale: 2.5,
   offset: {
     x: 215,
-    y: 92
+    y: 86
   },
   sprites: {
     idle: {
