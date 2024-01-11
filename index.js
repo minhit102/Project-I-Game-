@@ -1,5 +1,34 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const jumpSound = createAudio('cartoon-jump-6462.mp3');
+
+function createAudio(src) {
+  const audio = audioContext.createBufferSource();
+  const request = new XMLHttpRequest();
+  request.open('GET', src, true);
+  request.responseType = 'arraybuffer';
+
+  request.onload = function() {
+    audioContext.decodeAudioData(request.response, function(buffer) {
+      audio.buffer = buffer;
+    });
+  };
+
+  request.send();
+  return audio;
+}
+
+// Đảm bảo khởi động đối tượng âm thanh từ đầu
+function start(audio) {
+  if (audio) {
+    const newAudio = audioContext.createBufferSource();
+    newAudio.buffer = audio.buffer;
+    newAudio.connect(audioContext.destination);
+    newAudio.start(0);
+  }
+}
+
 
 canvas.width = 1024
 canvas.height = 576
@@ -271,6 +300,7 @@ window.addEventListener('keydown', (event) => {
         break
       case 'w':
         player.velocity.y = -20
+        jumpSound.start()
         break
       case ' ':
         player.attack()
