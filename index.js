@@ -1,34 +1,10 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const jumpSound = createAudio('cartoon-jump-6462.mp3');
-
-function createAudio(src) {
-  const audio = audioContext.createBufferSource();
-  const request = new XMLHttpRequest();
-  request.open('GET', src, true);
-  request.responseType = 'arraybuffer';
-
-  request.onload = function() {
-    audioContext.decodeAudioData(request.response, function(buffer) {
-      audio.buffer = buffer;
-    });
-  };
-
-  request.send();
-  return audio;
-}
-
-// Đảm bảo khởi động đối tượng âm thanh từ đầu
-function start(audio) {
-  if (audio) {
-    const newAudio = audioContext.createBufferSource();
-    newAudio.buffer = audio.buffer;
-    newAudio.connect(audioContext.destination);
-    newAudio.start(0);
-  }
-}
-
+let sound = new Audio('./audio/nhac_nen (mp3cut.net).mp3');
+let sound_jump = new Audio('./audio/jump.mp3');
+let sound_run = new Audio('./audio/run.mp3');
+let suund_attack = new Audio('./audio/attack.mp3');
+let sound_attacked = new Audio('./audio/attacked.mp3')
 
 canvas.width = 1024
 canvas.height = 576
@@ -166,7 +142,6 @@ const enemy = new Fighter({
   }
 })
 
-console.log(player)
 
 const keys = {
   a: {
@@ -187,8 +162,10 @@ decreaseTimer()
 
 function animate() {
   window.requestAnimationFrame(animate)
+  sound.play();
   c.fillStyle = 'black'
   c.fillRect(0, 0, canvas.width, canvas.height)
+  sound.play();
   background.update()
   c.fillStyle = 'rgba(255, 255, 255, 0.15)'
   c.fillRect(0, 0, canvas.width, canvas.height)
@@ -245,6 +222,8 @@ function animate() {
     player.framesCurrent === 4
   ) {
     enemy.takeHit()
+    sound_attacked.play();
+
     player.isAttacking = false
 
     gsap.to('#enemyHealth', {
@@ -264,9 +243,10 @@ function animate() {
       rectangle2: player
     }) &&
     enemy.isAttacking &&
-    enemy.framesCurrent === 2
+    enemy.framesCurrent === 4
   ) {
     player.takeHit()
+    sound_attacked.play()
     enemy.isAttacking = false
 
     gsap.to('#playerHealth', {
@@ -293,17 +273,20 @@ window.addEventListener('keydown', (event) => {
       case 'd':
         keys.d.pressed = true
         player.lastKey = 'd'
+        sound_run.play()
         break
       case 'a':
         keys.a.pressed = true
         player.lastKey = 'a'
+        sound_run.play()
         break
       case 'w':
         player.velocity.y = -20
-        jumpSound.start()
+        sound_jump.play();
         break
       case ' ':
         player.attack()
+        suund_attack.play()
         break
     }
   }
@@ -313,22 +296,25 @@ window.addEventListener('keydown', (event) => {
       case 'ArrowRight':
         keys.ArrowRight.pressed = true
         enemy.lastKey = 'ArrowRight'
+        sound_run.play()
         break
       case 'ArrowLeft':
         keys.ArrowLeft.pressed = true
         enemy.lastKey = 'ArrowLeft'
+        sound_run.play()
         break
       case 'ArrowUp':
         enemy.velocity.y = -20
+        sound_jump.play();
         break
       case 'ArrowDown':
         enemy.attack()
+        suund_attack.play()
 
         break
     }
   }
 })
-
 window.addEventListener('keyup', (event) => {
   switch (event.key) {
     case 'd':
