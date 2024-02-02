@@ -1,0 +1,51 @@
+.backgrourd-class {
+    border: 1px solid red;
+    background-image: url("./anh/Ảnh\ chụp\ màn\ hình\ 2024-01-24\ 232423.png");
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+
+}
+
+.red {
+    border: 1px solid red;
+}
+
+.green {
+    border: 1px solid green;
+}
+
+.btn{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh; /* Tùy chỉnh chiều cao nếu cần thiết */
+}
+
+
+.btn-Start1,
+.btn-Start2 {
+    background-color: Transparent;
+    text-transform: uppercase;
+    padding: 60px 90px;
+    border-radius: 20px;
+    border: 1px solid orange;
+    margin-top: 25px;
+    color: red;
+}
+
+.btn-Start {
+    background-color: Transparent;
+    text-transform: uppercase;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid orange;
+    margin-top: 25px;
+    color: red;
+}
+
+/* Đặt margin-right cho btn-Start1 để cách nhau 3cm */
+.btn-Start1 {
+    margin-right: 5cm;
+}
